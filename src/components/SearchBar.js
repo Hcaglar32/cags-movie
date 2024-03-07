@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useState } from "react";
+const SearchBar = ({searchMovieProp}) => {
 
-const Header = () => {
+    
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    }
+
     return (
         <header className="flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white text-sm py-4 dark:bg-gray-800">
             <nav className="max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between" aria-label="Global">
@@ -13,11 +19,14 @@ const Header = () => {
                         </button>
                     </div>
                 </div>
-              
+
                 <div className="hidden sm:flex sm:items-center">
                     <div className="relative">
-                        <input type="text" className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ara..." />
-                        <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent focus:outline-none"></button>
+                        <form onSubmit={handleSubmit}>
+                            <input onChange={searchMovieProp}
+                                type="text" className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ara..." />
+                        </form>
+
                     </div>
                 </div>
             </nav>
@@ -25,4 +34,4 @@ const Header = () => {
     );
 };
 
-export default Header;
+export default SearchBar;
