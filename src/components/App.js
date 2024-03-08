@@ -2,29 +2,50 @@ import React, { Component, useEffect, useState } from "react";
 import SearchBar from './SearchBar';
 import MovieList from './MovieList';
 import { data } from "autoprefixer";
-
+import axios from "axios";
 const App = () => {
   const [movies, setMovies] = useState([]);
 
 
 
+  /* useEffect(() => {
+     const fetchData = async () => {
+       const baseUrl = "http://localhost:3000/movies";
+       const response = await fetch(baseUrl);
+       const data = await response.json();
+       console.log(response);
+       console.log(data);
+       setMovies(data); 
+     };
+   
+     fetchData();
+   }, []);*/
+
   useEffect(() => {
-    const fetchData = async () => {
-      const baseUrl = "http://localhost:3000/movies";
-      const response = await fetch(baseUrl);
-      const data = await response.json();
-      console.log(response);
-      console.log(data);
-      setMovies(data); 
+    const axiosData = async () => {
+      const response = await axios.get('http://localhost:3000/movies');
+      setMovies(response.data)
+      //console.log(response);
     };
-  
-    fetchData();
+    axiosData();
   }, []);
-  
 
   const [searchQuery, setSearchQuery] = useState("");
+  
 
-  const deleteMovie = (movie) => {
+  /* FETCH  
+  const deleteMovie = async (movie) => {
+    const baseUrl = await `http://localhost:3000/movies/${movie.id}`;
+    await fetch(baseUrl, {
+      method: "DELETE",
+    });
+
+    const newMovieList = movies.filter(m => m.id !== movie.id);
+    setMovies(newMovieList);
+  };*/
+
+  const deleteMovie = async (movie) => {
+     axios.delete(`http://localhost:3000/movies/${movie.id}`);
     const newMovieList = movies.filter(m => m.id !== movie.id);
     setMovies(newMovieList);
   };
