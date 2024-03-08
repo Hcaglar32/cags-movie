@@ -6,7 +6,7 @@ const MovieList = ({ movies, deleteMovieProp }) => {
 
     return (
         <div className="container mx-auto mt-10 py-8">
-            <div className="flex justify-between">
+            <div className="flex justify-between flex-wrap">
                 {movies.map((movie) => (
                     <div className="movie-card mb-8 w-1/2 flex" key={movie.id}>
                         <div className="flex items-center mr-8 space-x-4 bg-white rounded-lg shadow-md p-5">
