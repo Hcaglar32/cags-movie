@@ -2,50 +2,77 @@ import React, { useEffect, useState } from "react";
 import SearchBar from './SearchBar';
 import MovieList from './MovieList';
 import axios from "axios";
+import qs from "qs";
 
 const App = () => {
+
+  const rated_url = 'https://api.themoviedb.org/3/movie/top_rated';
+  const query_url = 'https://api.themoviedb.org/3/search/movie';
+
+
   const [movies, setMovies] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [currentUrl, setcurrentUrl] = useState(rated_url);
+  const [params, setParams] = useState({
+    'page': 1,
+    'language': 'en-US'
+  });
 
   useEffect(() => {
-    if (searchQuery.trim() == "") {
-      getData();
-    } else {
-      searchMovieApi(searchQuery);
-    }
-  }, [searchQuery]);
+    getMovie(currentUrl, params);
+  }, []);
 
-  const getData = async (page = 2) => {
-    const config = {
+  const getMovie = async (url, param, more = 0) => {
+    //console.log('parammsms',param);
+    const response = await axios({
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=vote_average.desc&without_genres=99,10755&vote_count.gte=200&api_key=01a73c2decaf92451e35489578627fc3`,
+      url: url,
       headers: {
         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwMWE3M2MyZGVjYWY5MjQ1MWUzNTQ4OTU3ODYyN2ZjMyIsInN1YiI6IjY1ZWFmNWIyOTRkOGE4MDE3YjhmYTlmOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-2a79VjLsPayZuTleeZ0NUjXtWq3JLMIxRi58LoYUNA',
         'accept': 'application/json'
+      },
+      params: param,
+      paramsSerializer: params => {
+        return qs.stringify(params)
       }
-    };
-
-    try {
-      const response = await axios(config);
+    });
+    if (more) {
+      setMovies([...movies, ...response.data.results]);
+    } else {
       setMovies(response.data.results);
-    } catch (error) {
-      console.error('Hata oluştu:', error);
     }
-  };
 
-  const searchMovieApi = async (query) => {
-    try {
-      const response = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=1&api_key=01a73c2decaf92451e35489578627fc3`);
-      setMovies(response.data.results);
-    } catch (error) {
-      console.error('Hata oluştu:', error);
-    }
   };
 
   const handleSearch = (event) => {
-    setSearchQuery(event.target.value);
+    let new_param;
+    let new_currentUrl;
+    if (event.target.value !== '') {
+      console.log('nana')
+      params.query = event.target.value;
+      new_param = params;
+      new_currentUrl = query_url;
+      setcurrentUrl(query_url);
+    } else {
+      console.log('çalıştım');
+      new_param = {
+        'page': 1,
+        'language': 'en-US'
+      }
+      new_currentUrl = rated_url;
+      setParams(new_param);
+      setcurrentUrl(new_currentUrl);
+    }
+    getMovie(new_currentUrl, new_param);
   };
+
+  const loadMore = () => {
+    let new_params = params;
+    new_params.page = params.page + 1;
+    setParams(new_params);
+    getMovie(currentUrl, params, 1);
+  };
+
 
   return (
     <div className="container-fluid mx-auto">
@@ -53,6 +80,7 @@ const App = () => {
         <SearchBar searchMoviePropApi={handleSearch} />
       </div>
       <MovieList movies={movies} />
+      <button onClick={loadMore}>Daha Fazla</button>
     </div>
   );
 };
