@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-const SearchBar = ({searchMovieProp}) => {
-
-    
+import React from "react";
+const SearchBar = ({ searchMoviePropApi }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -23,10 +21,9 @@ const SearchBar = ({searchMovieProp}) => {
                 <div className="hidden sm:flex sm:items-center">
                     <div className="relative">
                         <form onSubmit={handleSubmit}>
-                            <input onChange={searchMovieProp}
+                            <input onChange={searchMoviePropApi}
                                 type="text" className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ara..." />
                         </form>
-
                     </div>
                 </div>
             </nav>
