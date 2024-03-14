@@ -3,7 +3,7 @@ import SearchBar from './SearchBar';
 import MovieList from './MovieList';
 import axios from "axios";
 import qs from "qs";
-
+import InfiniteScroll from 'react-infinite-scroll-component';
 const App = () => {
 
   const rated_url = 'https://api.themoviedb.org/3/movie/top_rated';
@@ -73,14 +73,18 @@ const App = () => {
     getMovie(currentUrl, params, 1);
   };
 
-
   return (
     <div className="container-fluid mx-auto">
       <div className="w-full">
         <SearchBar searchMoviePropApi={handleSearch} />
       </div>
-      <MovieList movies={movies} />
-      <button onClick={loadMore}>Daha Fazla</button>
+      <InfiniteScroll dataLength={movies.length} next={loadMore} hasMore={true} endMessage={
+        <p style={{ textAlign: 'center' }}>
+          <b>Hepsini Görüntüledin... Tebrikler!</b>
+        </p>
+      } loader={<h4>Yükleniyor...</h4>}>
+        <MovieList movies={movies} />
+      </InfiniteScroll>
     </div>
   );
 };
